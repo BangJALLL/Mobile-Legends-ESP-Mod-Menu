@@ -4,9 +4,6 @@
 package uk.lgl.modmenu;
 
 import android.annotation.TargetApi;
-import android.animation.ArgbEvaluator;
-import android.animation.TimeAnimator;
-import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlertDialog;
@@ -73,11 +70,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import uk.lgl.animation.AnimationSetupCallback;
-import uk.lgl.animation.Titanic;
-import uk.lgl.animation.TitanicButton;
-import uk.lgl.animation.TitanicTextView;
-
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.RelativeLayout.ALIGN_PARENT_LEFT;
@@ -86,7 +78,6 @@ import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
 public class FloatingModMenuService extends Service {
     //********** Here you can easly change the menu appearance **********//
     public static final String TAG = "Mod_Menu"; //Tag for logcat
-    int ANIMATION_LAYOUT = 0;
     int TEXT_COLOR = Color.parseColor("#82CAFD");
     int TEXT_COLOR_2 = Color.parseColor("#FFFFFF");
     int BTN_COLOR = Color.parseColor("#1C262D");
@@ -143,9 +134,6 @@ public class FloatingModMenuService extends Service {
 
         //Create the menu
         initFloating();
-
-        //Start the Gradient Animation
-        startAnimation();
 
         //Create a handler for this Class
         final Handler handler = new Handler();
@@ -255,8 +243,7 @@ public class FloatingModMenuService extends Service {
         titleText.setPadding(10, 5, 10, 5);
         titleText.setVerticalGravity(16);
 
-        // TextView title = new TextView(this);
-        TitanicTextView title = new TitanicTextView(this);
+        TextView title = new TextView(this);
         //title.setText(Html.fromHtml(Title()));
         title.setTextColor(TEXT_COLOR);
         title.setTextSize(18.0f);
@@ -265,10 +252,9 @@ public class FloatingModMenuService extends Service {
         rl.addRule(RelativeLayout.CENTER_HORIZONTAL);
         title.setLayoutParams(rl);
         setTitleText(title);
-        new Titanic().start(title);
 
         //********** Heading text **********
-        TitanicTextView heading = new TitanicTextView(this);
+        TextView heading = new TextView(this);
         //heading.setText(Html.fromHtml(Heading()));
         heading.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         heading.setMarqueeRepeatLimit(-1);
@@ -279,7 +265,6 @@ public class FloatingModMenuService extends Service {
         heading.setGravity(Gravity.CENTER);
         heading.setPadding(0, 0, 0, 5);
         setHeadingText(heading);
-        new Titanic().start(heading);
 
         //********** Mod menu feature list **********
         scrollView = new ScrollView(this);
@@ -302,7 +287,7 @@ public class FloatingModMenuService extends Service {
         RelativeLayout.LayoutParams lParamsHideBtn = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lParamsHideBtn.addRule(ALIGN_PARENT_LEFT);
 
-        TitanicButton hideBtn = new TitanicButton(this);
+        Button hideBtn = new Button(this);
         hideBtn.setLayoutParams(lParamsHideBtn);
         hideBtn.setBackgroundColor(Color.TRANSPARENT);
         hideBtn.setText("HIDE/KILL (Hold)");
@@ -324,13 +309,12 @@ public class FloatingModMenuService extends Service {
                 return false;
             }
         });
-        new Titanic().start(hideBtn);
 
         //********** Close button **********
         RelativeLayout.LayoutParams lParamsCloseBtn = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lParamsCloseBtn.addRule(ALIGN_PARENT_RIGHT);
 
-        TitanicButton closeBtn = new TitanicButton(this);
+        Button closeBtn = new Button(this);
         closeBtn.setLayoutParams(lParamsCloseBtn);
         closeBtn.setBackgroundColor(Color.TRANSPARENT);
         closeBtn.setText("MINIMIZE");
@@ -342,9 +326,6 @@ public class FloatingModMenuService extends Service {
                 mExpanded.setVisibility(View.GONE);
             }
         });
-
-        new Titanic().start(closeBtn);
-
 
         //********** Params **********
         //Variable to check later if the phone supports Draw over other apps permission
@@ -1004,96 +985,6 @@ public class FloatingModMenuService extends Service {
         wView.setPadding(0, 5, 0, 5);
         wView.getSettings().setAppCacheEnabled(false);
         return wView;
-    }
-
-    int secondaryColor;
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void startAnimation() {
-        //https://stackoverflow.com/questions/46357251/android-argbevaluator-calculate-fraction
-        //Thanks RAUNAK MODS
-
-        //0xAARRGGBB
-        //RED         = 0xFFFF0000;
-        //YELLOW      = 0xFFFFFF00;
-        //GREEN       = 0xFF00FF00;
-        //BLUE        = 0xFF0000FF;
-        //MAGENTA     = 0xFFFF00FF;
-        //ValueAnimator animator = ValueAnimator.ofArgb(Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA, Color.RED);
-        //Color animation with transparent
-
-        int duration = 12000;
-
-        if (ANIMATION_LAYOUT == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //RED, YELLOW, GREEN, BLUE, MAGENTA, RED
-            ValueAnimator animator = ValueAnimator.ofArgb(0xAAFF0000, 0xAAFFFF00, 0xAA00FF00, 0xAA0000FF, 0xAAFF00FF, 0xAAFF0000);
-            animator.setDuration(duration);
-            animator.setRepeatCount(ValueAnimator.INFINITE);
-            //animator.setRepeatMode(ValueAnimator.REVERSE);
-
-            //Apply GradientDrawable to it
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int color = (int) animation.getAnimatedValue();
-                    // if (Preferences.isAnimating) {
-                    GradientDrawable gdMenuBody = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
-                            new int[]{color, secondaryColor});
-                    gdMenuBody.setCornerRadius(MENU_CORNER); //Set corner
-                    //gdMenuBody.setStroke(3, Color.parseColor("#32cb00")); //Set border
-
-                    mExpanded.setBackground(gdMenuBody);
-                    //mExpanded.setBackgroundColor(color);
-                    //} else
-                    // mExpanded.setBackgroundColor(MENU_BG_COLOR);
-                }
-            });
-            animator.start();
-            //YELLOW, GREEN, BLUE, MAGENTA, RED, YELLOW
-            ValueAnimator animator2 = ValueAnimator.ofArgb(0xAAFFFF00, 0xAA00FF00, 0xAA0000FF, 0xAAFF00FF, 0xAAFF0000, 0xAAFFFF00);
-            animator2.setDuration(duration);
-            animator2.setRepeatCount(ValueAnimator.INFINITE);
-            animator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    secondaryColor = (int) animation.getAnimatedValue();
-                }
-            });
-            animator2.start();
-        } else if (ANIMATION_LAYOUT == 1) {
-            //Credit: Octowolve
-            //https://github.com/Octowolve/Hooking-Template-With-Mod-Menu/blob/27f68f4f7b4f8f40763aa2d2ebf9c85e7ae04fa5/app/src/main/java/com/dark/force/MenuService.java#L505
-
-            final int start = Color.parseColor("#ddc31432");
-            // final int middle = Color.parseColor("#0000ffff");
-            final int end = Color.parseColor("#dd240b36");
-
-            final ArgbEvaluator evaluator = new ArgbEvaluator();
-            final GradientDrawable gd = new GradientDrawable();
-            gd.setCornerRadius(MENU_CORNER);
-            gd.setOrientation(GradientDrawable.Orientation.TL_BR);
-            final GradientDrawable gradient = gd;
-
-            ValueAnimator octoanimator = TimeAnimator.ofFloat(0.0f, 1.0f);
-            octoanimator.setDuration(10000);
-            octoanimator.setRepeatCount(ValueAnimator.INFINITE);
-            octoanimator.setRepeatMode(ValueAnimator.REVERSE);
-            octoanimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    Float fraction = valueAnimator.getAnimatedFraction();
-                    int newStart = (int) evaluator.evaluate(fraction, start, end);
-                    //int newMiddle = (int) evaluator.evaluate(fraction, middle, end);
-                    int newEnd = (int) evaluator.evaluate(fraction, end, start);
-                    int[] newArray = {newStart, newEnd};
-                    gradient.setColors(newArray);
-                    mExpanded.setBackground(gd);
-       
-                }
-            });
-
-            octoanimator.start();
-        }
     }
 
     //Override our Start Command so the Service doesnt try to recreate itself when the App is closed
