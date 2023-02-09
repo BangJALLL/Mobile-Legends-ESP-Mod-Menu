@@ -14,7 +14,7 @@ import android.view.View;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import uk.lgl.modmenu.FloatingModMenuServices;
+import uk.lgl.modmenu.FloatingModMenuService;
 
 public class ESPView extends View implements Runnable {
     Paint mStrokePaint;
@@ -43,6 +43,7 @@ public class ESPView extends View implements Runnable {
         if (canvas != null && getVisibility() == VISIBLE) {
             ClearCanvas(canvas);
             time.setTime(System.currentTimeMillis());
+            FloatingModMenuService.DrawOn(this, canvas);
         }
     }
 
