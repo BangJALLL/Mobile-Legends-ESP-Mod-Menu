@@ -9,7 +9,7 @@ android {
         versionCode 1
         versionName "2.8"
         ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86'
+            abiFilters 'armeabi-v7a'
         }
         signingConfig signingConfigs.debug
     }
