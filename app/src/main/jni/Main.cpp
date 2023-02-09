@@ -86,7 +86,7 @@ JNIEXPORT void JNICALL
 Java_uk_lgl_modmenu_FloatingModMenuService_DrawOn(JNIEnv *env, jclass type, jobject espView, jobject canvas) {
     espOverlay = ESPOverlay(env, espView, canvas);
     if (espOverlay.isValid()) {
-        DrawESP(espOverlay, espOverlay.getWidth(), espOverlay.getHeight());
+        DrawESP(espOverlay, espOverlay.width(), espOverlay.height());
     }
 }
 
