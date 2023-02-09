@@ -21,9 +21,9 @@
 #include <Substrate/SubstrateHook.h>
 #include <Substrate/CydiaSubstrate.h>
 
-struct composition {
+struct component {
     Vector3 position;
-}
+};
 
 struct variable {
     component player[10];
@@ -56,7 +56,7 @@ void Update(void *instance) {
                         bool isDead = GetHPEmpty(_logicFighter);
                         if (!isDead) {
                             Vector3 objectPosition = get_Position(_logicFighter);
-                            var.player[i].position = WolrdToScreenPoint(get_main(NULL), objectPosition);
+                            var.player[i].position = WorldToScreenPoint(get_main(NULL), objectPosition);
                         } else {
                             var.player[i].position = Vector3::Zero();
                         }
@@ -107,14 +107,12 @@ void *hack_thread(void *) {
 
     LOGI(OBFUSCATE("%s has been loaded"), (const char *) targetLibName);
 
-    MSHookFunction((void *) getAbsoluteAddress(targetLibName,
-                   string2Offset(OBFUSCATE_KEY("0x2680934" /* Namespace: , Class: BattleManager, Methods: Update, params: 0 */, '?'))),
-                   (void *) Update, (void **) &old_Update);
+    MSHookFunction((void *) getAbsoluteAddress(targetLibName, 0x2680934 /* Namespace: , Class: BattleManager, Methods: Update, params: 0 */), (void *) Update, (void **) &old_Update);
 
     get_main = (void *(*)(void *)) getAbsoluteAddress(targetLibName, 0x5AB5B44 /* Namespace: UnityEngine, Class: Camera, Methods: get_main, params: 0 */);
     WorldToScreenPoint = (Vector3 (*)(void *, Vector3)) getAbsoluteAddress(targetLibName, 0x5AB549C /* Namespace: UnityEngine, Class: Camera, Methods: WorldToScreenPoint, params: 1 */);
     get_Position = (Vector3 (*)(void *)) getAbsoluteAddress(targetLibName, 0x37C2990 /* Namespace: Battle, Class: LogicFighter, Methods: get_Position, params: 0 */);
-    SetResolution = (void *(*)(void *, int, int, bool)) getAbsoluteAddress(targetLibName, 0x62CA4A0 /* Namespace: UnityEngine, Class: Screen, Methods: SetResolution, params: 3 */);
+    SetResolution = (void (*)(void *, int, int, bool)) getAbsoluteAddress(targetLibName, 0x62CA4A0 /* Namespace: UnityEngine, Class: Screen, Methods: SetResolution, params: 3 */);
     GetHPEmpty = (bool (*)(void *)) getAbsoluteAddress(targetLibName, 0x37A34C /* Namespace: Battle, Class: LogicFighter, Methods: GetHPEmpty, params: 0 */);
 
     LOGI(OBFUSCATE("Done"));
