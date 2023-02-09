@@ -138,7 +138,7 @@ public class FloatingModMenuService extends Service {
     public void onCreate() {
         super.onCreate();
         Preferences.context = this;
-        this.overlayView = ESPView((Context) this);
+        this.overlayView = new ESPView((Context) this);
 
         //Create the menu
         initFloating();
