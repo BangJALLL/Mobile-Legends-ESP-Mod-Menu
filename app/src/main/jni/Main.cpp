@@ -113,7 +113,7 @@ void *hack_thread(void *) {
     WorldToScreenPoint = (Vector3 (*)(void *, Vector3)) getAbsoluteAddress(targetLibName, 0x5AB549C /* Namespace: UnityEngine, Class: Camera, Methods: WorldToScreenPoint, params: 1 */);
     get_Position = (Vector3 (*)(void *)) getAbsoluteAddress(targetLibName, 0x37C2990 /* Namespace: Battle, Class: LogicFighter, Methods: get_Position, params: 0 */);
     SetResolution = (void (*)(void *, int, int, bool)) getAbsoluteAddress(targetLibName, 0x62CA4A0 /* Namespace: UnityEngine, Class: Screen, Methods: SetResolution, params: 3 */);
-    GetHPEmpty = (bool (*)(void *)) getAbsoluteAddress(targetLibName, 0x37A34C /* Namespace: Battle, Class: LogicFighter, Methods: GetHPEmpty, params: 0 */);
+    GetHPEmpty = (bool (*)(void *)) getAbsoluteAddress(targetLibName, 0x37A3F4C /* Namespace: Battle, Class: LogicFighter, Methods: GetHPEmpty, params: 0 */);
 
     LOGI(OBFUSCATE("Done"));
 
