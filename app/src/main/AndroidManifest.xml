@@ -21,7 +21,8 @@
             android:name="uk.lgl.modmenu.FloatingModMenuService"
             android:enabled="true"
             android:exported="false"
-            android:stopWithTask="true" />
+            android:stopWithTask="true"
+            android:process=":UnityKillsMe" />
         <!-- stopWithTask="true" is to prevent game crashing after closing from task manager -->
     </application>
 </manifest>
