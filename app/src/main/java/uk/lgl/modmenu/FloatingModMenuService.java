@@ -19,6 +19,7 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.grapgics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -126,6 +127,12 @@ public class FloatingModMenuService extends Service {
 
     native boolean isGameLibLoaded();
 
+    public static native void DrawOn(ESPView espView, Canvas canvas);
+
+    private WindowManager.LayoutParams espParams;
+
+    private ESPView overlayView;
+
     //When this Class is called the code in this function will be executed
     @Override
     public void onCreate() {
@@ -134,6 +141,7 @@ public class FloatingModMenuService extends Service {
 
         //Create the menu
         initFloating();
+        DrawCanvas();
 
         //Create a handler for this Class
         final Handler handler = new Handler();
@@ -143,6 +151,28 @@ public class FloatingModMenuService extends Service {
                 handler.postDelayed(this, 1000);
             }
         });
+    }
+
+    private int layoutType() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            return 2038;
+        }
+        if (Build.VERSION.SDK_INT >= 24) {
+            return 2002;
+        }
+        if (Build.VERSION.SDK_INT >= 23) {
+            return 2005;
+        }
+        return 2003;
+    }
+
+    private void DrawCanvas() {
+        WindowManager.LayoutParams layoutParams;
+        this.espParams = layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, this.layoutType(), WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, PixelFormat.TRANSLUCENT);
+        layoutParams.gravity = Gravity.TOP | Gravity.START;
+        this.espParams.x = 0;
+        this.espParams.y = 100;
+        this.mWindowManager.addView((View) this.overlayView, (ViewGroup.LayoutParams) this.espParams);
     }
 
     //Here we write the code for our Menu
