@@ -12,7 +12,7 @@ class ESPOverlay {
     ESPOverlay() {
         _env = nullptr;
         _cvsView = nullptr;
-        _csv = nullptr;
+        _cvs = nullptr;
     }
 
     ESPOverlay(JNIEnv *env, jobject cvsView, jobject cvs) {
