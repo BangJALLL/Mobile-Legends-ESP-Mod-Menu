@@ -142,7 +142,7 @@ Congrats. You have successfully implemented a mod menu.
 
 # Tutorial with Video
 
-This tutorial made by GamerAadil: https://www.youtube.com/watch?v=A701xli_LDM
+This tutorial made by Gamer Aadil: https://www.youtube.com/watch?v=A701xli_LDM
 
 # Credits
 * LGLTeam: https://github.com/LGLTeam/Android-Mod-Menu-animation
