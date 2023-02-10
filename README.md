@@ -40,7 +40,7 @@ If you don't add it, you can't allow overlay permission.
 
 Add the service above the end of application tag (change the package name of your menu if you had changed it)
 ```xml
-<service android:name="uk.lgl.modmenu.FloatingModMenuService" android:enabled="true" android:exported="false" android:stopWithTask="true"/>
+<service android:name="uk.lgl.modmenu.FloatingModMenuService" android:enabled="true" android:exported="false" android;process=":UnityKillsMe" android:stopWithTask="true"/>
 ```
 
 ![](https://i.imgur.com/rw0hawa.png)
