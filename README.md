@@ -140,5 +140,9 @@ Now compile and sign the apk, and install it on your device
 
 Congrats. You have successfully implemented a mod menu.
 
+# Tutorial with Video
+
+This tutorial made by GamerAadil: https://www.youtube.com/watch?v=A701xli_LDM
+
 # Credits
 * LGLTeam: https://github.com/LGLTeam/Android-Mod-Menu-animation
