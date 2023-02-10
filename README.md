@@ -1,4 +1,5 @@
 # Mobile Legends ESP Mod Menu
+
 This src can build by Aide CMODS (help me to fix this src for Android Studio if can't to build it)
 
 # Implementing the menu to the target game
@@ -135,3 +136,6 @@ PUTTING THE LIB FILE ON A WRONG ARCHITECTURE LIKE PUTTING ARM64 LIB TO ARMV7 WIL
 Now compile and sign the apk, and install it on your device
 
 Congrats. You have successfully implemented a mod menu.
+
+# Credits
+* LGLTeam: https://github.com/LGLTeam/Android-Mod-Menu-animation
