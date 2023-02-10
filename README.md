@@ -13,7 +13,7 @@ Menu linearlayout animation is based on GradientDrawable. https://developer.andr
 
 `ValueAnimator.ofArgb` is only for Android 5.0 and above
 
-Octowolve's 2 colors animation works on 4.4 https://github.com/Octowolve/Hooking-Template-With-Mod-Menu
+Octowolve's 2 colors animation works on 4.4 https://ibb.co/1n975K8
 
 Have fun :))
 
