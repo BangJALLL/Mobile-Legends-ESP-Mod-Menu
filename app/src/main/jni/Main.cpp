@@ -97,7 +97,7 @@ void *hack_thread(void *) {
 
     MSHookFunction((void *) Il2CppGetMethodOffset("Assembly-CSharp.dll", "", "BattleManager", "Update", 0), (void *) Update, (void **) &old_Update);
 
-    WorldToScreenPoint = (Vector3 (*)(void *, Vector3)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "WorldToScreen", 1);
+    WorldToScreenPoint = (Vector3 (*)(void *, Vector3)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "WorldToScreenPoint", 1);
     get_main = (void *(*)(void *)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_main", 0);
     SetResolution = (void (*)(int, int, bool)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Screen", "SetResolution", 3);
     get_Position = (Vector3 (*)(void *)) Il2CppGetMethodOffset("Assembly-CSharp.dll", "Battle", "LogicFighter", "get_Position", 0);
