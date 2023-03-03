@@ -39,18 +39,18 @@ bool (*GetHPEmpty)(void *instance);
 void DrawESP(ESPOverlay esp, int screenWidth, int screenHeight) {
    if (ESP) {
        if (BattleManager != NULL) {
-            monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers");
+            monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers"));
             if (m_ShowPlayers != NULL) {
                 for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
                     void *obj = m_ShowPlayers->getItems()[i];
                     if (obj != NULL) {
-                        void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter");
+                        void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter"));
                         if (_logicFighter != NULL) {
                             bool isDead = GetHPEmpty(_logicFighter);
                             if (!isDead) {
                                 Vector3 objPos = WorldToScreenPoint(get_main(NULL), get_Position(_logicFighter));
                                 if (ESPLine) {
-                                    esp.drawLine(Color::White(), 1, Vector2(screenWidth / 2, screenHeight / 2), Vector2(objPos.X, screenHeight - objPos.Y);
+                                    esp.drawLine(Color::White(), 1, Vector2(screenWidth / 2, screenHeight / 2), Vector2(objPos.X, screenHeight - objPos.Y));
                                 }
                             }
                         }
@@ -64,7 +64,7 @@ void DrawESP(ESPOverlay esp, int screenWidth, int screenHeight) {
 void (*old_Update)(void *instance);
 void Update(void *instance) {
     if (instance != NULL) {
-        BattleManager = instance
+        BattleManager = instance;
     }
     old_Update(instance);
 }
