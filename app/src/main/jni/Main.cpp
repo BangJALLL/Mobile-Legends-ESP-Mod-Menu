@@ -17,74 +17,62 @@
 #include "Unity/Vector3.h"
 #include "Unity/MonoList.h"
 #include "Includes/ESPOverlay.h"
+#include "Structs/Tools.h"
+#include "Structs/fake_dlfcn.h"
+#include "Structs/Il2Cpp.h"
 
 #include <Substrate/SubstrateHook.h>
 #include <Substrate/CydiaSubstrate.h>
 
-struct component {
-    Vector3 position;
-};
-
-struct variable {
-    component player[10];
-    int count;
-} var;
-
 bool ESP, ESPLine;
-ESPOverlay espOverlay;
+void *BattleManager;
 
-void *(*get_main)(void *instance);
 Vector3 (*WorldToScreenPoint)(void *instance, Vector3 position);
+void *(*get_main)(void *instance);
+void (*SetResolution)(int width, int height, bool fullscreen);
 Vector3 (*get_Position)(void *instance);
-void (*SetResolution)(void *instance, int width, int height, bool fullscreen);
 bool (*GetHPEmpty)(void *instance);
 
 //Target lib here
 #define targetLibName OBFUSCATE("liblogic.so")
 
-void (*old_Update)(void *instance);
-void Update(void *instance) {
-    if (instance != NULL) {
-        if (ESP) {
-            monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) instance + 0x14 /* Namespace: , Class: BattleManager, Fields: m_ShowPlayers */);
+void DrawESP(ESPOverlay esp, int screenWidth, int screenHeight) {
+   if (ESP) {
+       if (BattleManager != NULL) {
+            monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers");
             if (m_ShowPlayers != NULL) {
-                var.count = m_ShowPlayers->getSize();
-                for (int i = 0; i < var.count; i++) {
-                    void *object = m_ShowPlayers->getItems()[i];
-                    void *_logicFighter = *(void **) ((long) object + 0x1E0 /* Namespace: , Class: ShowEntity, Fields: _logicFighter */);
-                    if (object != NULL && _logicFighter != NULL) {
-                        bool isDead = GetHPEmpty(_logicFighter);
-                        if (!isDead) {
-                            Vector3 objectPosition = get_Position(_logicFighter);
-                            var.player[i].position = WorldToScreenPoint(get_main(NULL), objectPosition);
-                        } else {
-                            var.player[i].position = Vector3::Zero();
+                for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
+                    void *obj = m_ShowPlayers->getItems()[i];
+                    if (obj != NULL) {
+                        void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter");
+                        if (_logicFighter != NULL) {
+                            bool isDead = GetHPEmpty(_logicFighter);
+                            if (!isDead) {
+                                Vector3 objPos = WorldToScreenPoint(get_main(NULL), get_Position(_logicFighter));
+                                if (ESPLine) {
+                                    esp.drawLine(Color::White(), 1, Vector2(screenWidth / 2, screenHeight / 2), Vector2(objPos.X, screenHeight - objPos.Y);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     }
-    old_Update(instance);
 }
 
-void DrawESP(ESPOverlay esp, int screenWidth, int screenHeight) {
-    if (ESP) {
-        for (int i = 0; i < var.count; i++) {
-            SetResolution(NULL, screenWidth, screenHeight, true);
-            if (var.player[i].position != Vector3::Zero()) {
-                if (ESPLine) {
-                    esp.drawLine(Color::White(), 1, Vector2(screenWidth / 2, screenHeight / 2), Vector2(var.player[i].position.X, screenHeight - var.player[i].position.Y));
-                }
-            }
-        }
+void (*old_Update)(void *instance);
+void Update(void *instance) {
+    if (instance != NULL) {
+        BattleManager = instance
     }
+    old_Update(instance);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 Java_uk_lgl_modmenu_FloatingModMenuService_DrawOn(JNIEnv *env, jclass type, jobject espView, jobject canvas) {
-    espOverlay = ESPOverlay(env, espView, canvas);
+    ESPOverlay espOverlay = ESPOverlay(env, espView, canvas);
     if (espOverlay.isValid()) {
         DrawESP(espOverlay, espOverlay.width(), espOverlay.height());
     }
@@ -107,13 +95,13 @@ void *hack_thread(void *) {
 
     LOGI(OBFUSCATE("%s has been loaded"), (const char *) targetLibName);
 
-    MSHookFunction((void *) getAbsoluteAddress(targetLibName, 0x2680934 /* Namespace: , Class: BattleManager, Methods: Update, params: 0 */), (void *) Update, (void **) &old_Update);
+    MSHookFunction((void *) Il2CppGetMethodOffset("Assembly-CSharp.dll", "", "BattleManager", "Update", 0), (void *) Update, (void **) &old_Update);
 
-    get_main = (void *(*)(void *)) getAbsoluteAddress(targetLibName, 0x5AB5B44 /* Namespace: UnityEngine, Class: Camera, Methods: get_main, params: 0 */);
-    WorldToScreenPoint = (Vector3 (*)(void *, Vector3)) getAbsoluteAddress(targetLibName, 0x5AB549C /* Namespace: UnityEngine, Class: Camera, Methods: WorldToScreenPoint, params: 1 */);
-    get_Position = (Vector3 (*)(void *)) getAbsoluteAddress(targetLibName, 0x37C2990 /* Namespace: Battle, Class: LogicFighter, Methods: get_Position, params: 0 */);
-    SetResolution = (void (*)(void *, int, int, bool)) getAbsoluteAddress(targetLibName, 0x62CA4A0 /* Namespace: UnityEngine, Class: Screen, Methods: SetResolution, params: 3 */);
-    GetHPEmpty = (bool (*)(void *)) getAbsoluteAddress(targetLibName, 0x37A3F4C /* Namespace: Battle, Class: LogicFighter, Methods: GetHPEmpty, params: 0 */);
+    WorldToScreenPoint = (Vector3 (*)(void *, Vector3)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "WorldToScreen", 1);
+    get_main = (void *(*)(void *)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Camera", "get_main", 0);
+    SetResolution = (void (*)(int, int, bool)) Il2CppGetMethodOffset("UnityEngine.dll", "UnityEngine", "Screen", "SetResolution", 3);
+    get_Position = (Vector3 (*)(void *)) Il2CppGetMethodOffset("Assembly-CSharp.dll", "Battle", "LogicFighter", "get_Position", 0);
+    GetHPEmpty = (bool (*)(void *)) Il2CppGetMethodOffset("Assembly-CSharp.dll", "Battle", "LogicFighter", "GetHPEmpty", 0);
 
     LOGI(OBFUSCATE("Done"));
 
