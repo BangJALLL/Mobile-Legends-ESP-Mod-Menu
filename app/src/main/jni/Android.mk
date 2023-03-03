@@ -29,6 +29,9 @@ LOCAL_SRC_FILES := Main.cpp \
 	KittyMemory/MemoryPatch.cpp \
     KittyMemory/MemoryBackup.cpp \
     KittyMemory/KittyUtils.cpp \
+    Structs/Tools.cpp \
+    Structs/fake_dlfcn.cpp \
+    Structs/Il2Cpp.cpp \
 
 LOCAL_LDLIBS := -llog -landroid -lGLESv2
 
