@@ -35,23 +35,6 @@ Vector3 (*get_Position)(void *instance);
 //Target lib here
 #define targetLibName OBFUSCATE("liblogic.so")
 
-void DrawESP(ESPOverlay esp, int screenWidth, int screenHeight) {
-   if (ESP) {
-       if (BattleManager != NULL) {
-            monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers"));
-            SetResolution(screenWidth, screenHeight, true);
-            for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
-                void *obj = m_ShowPlayers->getItems()[i];
-                void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter"));
-                Vector3 objPos = WorldToScreenPoint(get_main(NULL), get_Position(_logicFighter));
-                if (ESPLine) {
-                    esp.drawLine(Color::White(), 1, Vector2(screenWidth / 2, screenHeight / 2), Vector2(objPos.X, screenHeight - objPos.Y));
-                }
-            }
-        }
-    }
-}
-
 void (*old_Update)(void *instance);
 void Update(void *instance) {
     if (instance != NULL) {
@@ -63,9 +46,22 @@ void Update(void *instance) {
 extern "C"
 JNIEXPORT void JNICALL
 Java_uk_lgl_modmenu_FloatingModMenuService_DrawOn(JNIEnv *env, jclass type, jobject espView, jobject canvas) {
-    ESPOverlay espOverlay = ESPOverlay(env, espView, canvas);
-    if (espOverlay.isValid()) {
-        DrawESP(espOverlay, espOverlay.width(), espOverlay.height());
+    ESPOverlay esp = ESPOverlay(env, espView, canvas);
+    if (esp.isValid()) {
+        if (ESP) {
+            if (BattleManager != NULL) {
+                SetResolution(esp.width(), esp.height(), true);
+                monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers"));
+                for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
+                    void *obj = m_ShowPlayers->getItems()[i];
+                    void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter"));
+                    Vector3 objPos = WorldToScreenPoint(get_main(NULL), get_Position(_logicFighter));
+                    if (ESPLine) {
+                        esp.drawLine(Color::White(), 1, Vector2(esp.width() / 2, esp.height() / 2), Vector2(objPos.X, esp.height() - objPos.Y));
+                    }
+                }
+            }
+        }
     }
 }
 
