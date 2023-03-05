@@ -43,28 +43,6 @@ void Update(void *instance) {
     old_Update(instance);
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_uk_lgl_modmenu_FloatingModMenuService_DrawOn(JNIEnv *env, jclass type, jobject espView, jobject canvas) {
-    ESPOverlay esp = ESPOverlay(env, espView, canvas);
-    if (esp.isValid()) {
-        if (ESP) {
-            if (BattleManager != NULL) {
-                SetResolution(esp.width(), esp.height(), true);
-                monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers"));
-                for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
-                    void *obj = m_ShowPlayers->getItems()[i];
-                    void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter"));
-                    Vector3 objPos = WorldToScreenPoint(get_main(NULL), get_Position(_logicFighter));
-                    if (ESPLine) {
-                        esp.drawLine(Color::White(), 1, Vector2(esp.width() / 2, esp.height() / 2), Vector2(objPos.X, esp.height() - objPos.Y));
-                    }
-                }
-            }
-        }
-    }
-}
-
 // we will run our hacks in a new thread so our while loop doesn't block process main thread
 void *hack_thread(void *) {
     LOGI(OBFUSCATE("pthread created"));
@@ -152,6 +130,27 @@ Java_uk_lgl_modmenu_Preferences_Changes(JNIEnv *env, jclass clazz, jobject obj,
         case 1:
             ESPLine = boolean;
             break;
+    }
+}
+
+JNIEXPORT void JNICALL
+Java_uk_lgl_modmenu_FloatingModMenuService_DrawOn(JNIEnv *env, jclass type, jobject espView, jobject canvas) {
+    ESPOverlay esp = ESPOverlay(env, espView, canvas);
+    if (esp.isValid()) {
+        if (ESP) {
+            if (BattleManager != NULL) {
+                SetResolution(esp.width(), esp.height(), true);
+                monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers"));
+                for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
+                    void *obj = m_ShowPlayers->getItems()[i];
+                    void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter"));
+                    Vector3 objPos = WorldToScreenPoint(get_main(NULL), get_Position(_logicFighter));
+                    if (ESPLine) {
+                        esp.drawLine(Color::White(), 1, Vector2(esp.width() / 2, esp.height() / 2), Vector2(objPos.X, esp.height() - objPos.Y));
+                    }
+                }
+            }
+        }
     }
 }
 }
