@@ -39,6 +39,7 @@ void DrawESP(ESPOverlay esp, int screenWidth, int screenHeight) {
    if (ESP) {
        if (BattleManager != NULL) {
             monoList<void **> *m_ShowPlayers = *(monoList<void **> **) ((long) BattleManager + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "BattleManager", "m_ShowPlayers"));
+            SetResolution(screenWidth, screenHeight, true);
             for (int i = 0; i < m_ShowPlayers->getSize(); i++) {
                 void *obj = m_ShowPlayers->getItems()[i];
                 void *_logicFighter = *(void **) ((long) obj + Il2CppGetFieldOffset("Assembly-CSharp.dll", "", "ShowEntity", "_logicFighter"));
