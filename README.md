@@ -3,7 +3,7 @@
 This src can build by Aide CMODS (help me to fix this src for Android Studio if can't to build it)
 
 Preview:
-![](https://i.ibb.co/26jWQPg/photo1675918266.jpg)
+![](https://i.ibb.co/QbWcz0h/Whats-App-Image-2023-03-06-at-00-29-50.jpg)
 
 # Implementing the menu to the target game
 
